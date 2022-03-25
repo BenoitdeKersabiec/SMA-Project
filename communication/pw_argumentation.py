@@ -59,16 +59,15 @@ class ArgumentModel(Model):
         diesel_engine = Item("Diesel Engine", "A super cool diesel engine")
         electric_engine = Item("Electric Engine", "A very quiet engine")
         self.item_list = [diesel_engine, electric_engine]
-        #
+        
         self.A1 = ArgumentAgent(1, self, 'Alice', Preferences())
         self.A2 = ArgumentAgent(2, self, 'Bob', Preferences())
 
-        self.A1.generate_preferences(item_list)
-        self.A2.generate_preferences(item_list)
+        self.A1.generate_preferences(self.item_list)
+        self.A2.generate_preferences(self.item_list)
 
         self.schedule.add(self.A1)
         self.schedule.add(self.A2)
-        # ...
 
         self.running = True
 
@@ -85,7 +84,7 @@ if __name__ == "__main__":
     print('Electric Engine > Diesel Engine : {}'.format(argument_model.A1.preference.is_preferred_item(*argument_model.item_list)))
     print('Electric Engine (for agent 1) = {}'.format(argument_model.item_list[1].get_score(argument_model.A1.preference)))
     print('Diesel Engine (for agent 1) = {}'.format(argument_model.item_list[0].get_score(argument_model.A1.preference)))
-    print('Most preferred item is : {}'.format(A1.preference.most_preferred(argument_model.item_list).get_name()))
+    print('Most preferred item is : {}'.format(argument_model.A1.preference.most_preferred(argument_model.item_list).get_name()))
     print('Diesel Engine among top 10 items : {}'.format(argument_model.A1.preference.is_item_among_top_10_percent(argument_model.item_list[0], argument_model.item_list)))
 
 
