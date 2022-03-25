@@ -60,7 +60,7 @@ class ArgumentModel(Model):
         diesel_engine = Item("Diesel Engine", "A super cool diesel engine")
         electric_engine = Item("Electric Engine", "A very quiet engine")
         self.item_list = [diesel_engine, electric_engine]
-        #
+        
         self.A1 = ArgumentAgent(1, self, 'Alice', Preferences())
         self.A2 = ArgumentAgent(2, self, 'Bob', Preferences())
 
@@ -69,7 +69,6 @@ class ArgumentModel(Model):
 
         self.schedule.add(self.A1)
         self.schedule.add(self.A2)
-        # ...
 
         message = Message("Alice", "Bob", MessagePerformative(101), self.item_list[0])
         print(message)
