@@ -23,6 +23,20 @@ class ArgumentAgent(CommunicatingAgent):
 
     def step(self):
         super().step()
+        inbox = self.receive_message()
+        for in_message in inbox:
+            if in_message.get_performative().name == "PROPOSE":
+                if self.preference.is_item_among_top_10_percent(received[-1].get_content(), self.model.item_list):
+                    out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(102), in_message.get_content())
+                    print(self.get_name(), "sending message:")
+                    print(out_respond)
+                    self.send_message(out_respond)
+                else:
+                    out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(104), in_message.get_content())
+                    print(out_respond)
+                    self.send_message(out_respond)
+
+
 
     def get_preference(self):
         return self.preference
@@ -47,6 +61,8 @@ class ArgumentAgent(CommunicatingAgent):
         values_list = list(Value)
         shuffle(values_list)
         return values_list[0]
+
+
 
 
 class ArgumentModel(Model):
