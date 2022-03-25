@@ -1,16 +1,16 @@
 import sys
-sys.path.append('.')
+sys.path.append('communication')
 
 from mesa import Model
 from mesa.time import RandomActivation
 
 
-from agent.CommunicatingAgent import CommunicatingAgent
-from message.Message import Message
-from message.MessageService import MessageService
-from message.MessagePerformative import MessagePerformative
-from preferences.Preferences import Item, Preferences, CriterionName, CriterionValue
-from preferences.Value import Value
+from communication.agent.CommunicatingAgent import CommunicatingAgent
+from communication.message.Message import Message
+from communication.message.MessageService import MessageService
+from communication.message.MessagePerformative import MessagePerformative
+from communication.preferences.Preferences import Item, Preferences, CriterionName, CriterionValue
+from communication.preferences.Value import Value
 from random import shuffle
 
 
@@ -55,7 +55,6 @@ class ArgumentModel(Model):
     def __init__(self):
         self.schedule = RandomActivation(self)
         self.__messages_service = MessageService(self.schedule)
-        self.__message_performative = MessagePerformative()
 
         # To be completed
         diesel_engine = Item("Diesel Engine", "A super cool diesel engine")
@@ -72,9 +71,12 @@ class ArgumentModel(Model):
         self.schedule.add(self.A2)
         # ...
 
-        self.A1.send_message(Message(self.A1, self.A2, self.__message_performative.PROPOSE, self.item_list[0]))
-        test = self.A2.get_new_messages()
-        print("TEST", test)
+        message = Message("Alice", "Bob", MessagePerformative(101), self.item_list[0])
+        print(message)
+        self.A1.send_message(message)
+        received = self.A2.get_new_messages()
+        respond = Message("Bob", "Alice", MessagePerformative(102), received[-1].get_content())
+        print(respond)
         self.running = True
 
     def step(self):
