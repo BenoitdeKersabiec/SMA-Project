@@ -69,13 +69,6 @@ class ArgumentModel(Model):
 
         self.schedule.add(self.A1)
         self.schedule.add(self.A2)
-
-        message = Message("Alice", "Bob", MessagePerformative(101), self.item_list[0])
-        print(message)
-        self.A1.send_message(message)
-        received = self.A2.get_new_messages()
-        respond = Message("Bob", "Alice", MessagePerformative(102), received[-1].get_content())
-        print(respond)
         self.running = True
 
     def step(self):
@@ -86,13 +79,16 @@ class ArgumentModel(Model):
 if __name__ == "__main__":
     argument_model = ArgumentModel()
 
-    print(argument_model.item_list[0].get_value(argument_model.A1.preference, CriterionName.PRODUCTION_COST))
-    print(argument_model.A1.preference.is_preferred_criterion(CriterionName.CONSUMPTION, CriterionName.NOISE))
-    print('Electric Engine > Diesel Engine : {}'.format(argument_model.A1.preference.is_preferred_item(*argument_model.item_list)))
-    print('Electric Engine (for agent 1) = {}'.format(argument_model.item_list[1].get_score(argument_model.A1.preference)))
-    print('Diesel Engine (for agent 1) = {}'.format(argument_model.item_list[0].get_score(argument_model.A1.preference)))
-    print('Most preferred item is : {}'.format(argument_model.A1.preference.most_preferred(argument_model.item_list).get_name()))
-    print('Diesel Engine among top 10 items : {}'.format(argument_model.A1.preference.is_item_among_top_10_percent(argument_model.item_list[0], argument_model.item_list)))
-
-
+    message = Message("Alice", "Bob", MessagePerformative(101), argument_model.item_list[1])
+    print(message)
+    argument_model.A1.send_message(message)
+    received = argument_model.A2.get_new_messages()
+    if argument_model.A2.preference.is_item_among_top_10_percent(received[-1].get_content(), argument_model.item_list):
+        respond = Message("Bob", "Alice", MessagePerformative(102), received[-1].get_content())
+        print(respond)
+        argument_model.A2.send_message(respond)
+    else:
+        respond = Message("Bob", "Alice", MessagePerformative(104), received[-1].get_content())
+        print(respond)
+        argument_model.A2.send_message(respond)
     # To be completed
