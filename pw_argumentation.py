@@ -20,6 +20,7 @@ class ArgumentAgent(CommunicatingAgent):
     def __init__(self, unique_id, model, name, preference):
         super().__init__(unique_id, model, name)
         self.preference = preference
+        self.state = 'None'
 
     def step(self):
         super().step()
@@ -31,10 +32,16 @@ class ArgumentAgent(CommunicatingAgent):
                     print(self.get_name(), "sending message:")
                     print(out_respond)
                     self.send_message(out_respond)
+                    self.state="Accepted"
                 else:
                     out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(104), in_message.get_content())
                     print(out_respond)
                     self.send_message(out_respond)
+            if in_message.get_performative().name == "COMMIT" and self.state == "Accepted":
+                out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(103), in_message.get_content())
+                print(out_respond)
+                self.send_message(out_respond)
+
 
 
 
