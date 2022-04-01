@@ -76,6 +76,7 @@ class ArgumentModel(Model):
         diesel_engine = Item("Diesel Engine", "A super cool diesel engine")
         electric_engine = Item("Electric Engine", "A very quiet engine")
         self.item_list = [diesel_engine, electric_engine]
+        self.accepted_items = []
         
         self.A1 = ArgumentAgent(1, self, 'Alice', Preferences())
         self.A2 = ArgumentAgent(2, self, 'Bob', Preferences())
@@ -91,20 +92,59 @@ class ArgumentModel(Model):
         self.__messages_service.dispatch_messages(self.A1, self.A2, )
         self.schedule.step()
 
+def interact(agent, model):
+    new_messages=agent.get_new_messages()
+    for message in new_messages:
+        received = message
+        print(received)
+        exp = received.get_exp()
+        perf = received.get_performative()
+        item = received.get_content()
+        if perf==MessagePerformative.PROPOSE:
+            if agent.preference.is_item_among_top_10_percent(item, model.item_list):
+                respond = Message(agent.get_name(), exp, MessagePerformative.ACCEPT, item)
+                agent.send_message(respond)
+            else:
+                respond = Message(agent.get_name(), exp, MessagePerformative.ASK_WHY, item)
+                agent.send_message(respond)
+        elif perf==MessagePerformative.ACCEPT:
+            respond = Message(agent.get_name(), exp, MessagePerformative.COMMIT, item)
+            agent.send_message(respond)
+        elif perf==MessagePerformative.COMMIT:
+            previous_messages = agent.get_messages_from_exp(exp)
+            if len(previous_messages)>1 and previous_messages[-2].get_performative()==MessagePerformative.ACCEPT and item not in model.accepted_items:
+                model.accepted_items.append(item)
+            else:
+                respond = Message(agent.get_name(), exp, MessagePerformative.COMMIT, item)
+                agent.send_message(respond)
+
+
+
+
+
 
 if __name__ == "__main__":
     argument_model = ArgumentModel()
+    agents = argument_model.schedule.agents
+    agent1, agent2 = agents[0], agents[1]
+    message = Message(agent1.get_name(), agent2.get_name(), MessagePerformative.PROPOSE, argument_model.item_list[1])
+    agent1.send_message(message)
+    # print(message)
+    # argument_model.A1.send_message(message)
+    # received = argument_model.A2.get_new_messages()
+    # if argument_model.A2.preference.is_item_among_top_10_percent(received[-1].get_content(), argument_model.item_list):
+    #     respond = Message("Bob", "Alice", MessagePerformative.ACCEPT, received[-1].get_content())
+    #     print(respond)
+    #     argument_model.A2.send_message(respond)
+    #     argument_model.A1.send_message(Message("Bob", "Alice", MessagePerformative.COMMIT, received[-1].get_content()))
+    #     argument_model.A2.send_message(Message("Bob", "Alice", MessagePerformative.COMMIT, received[-1].get_content()))
+    # else:
+    #     respond = Message("Bob", "Alice", MessagePerformative.ASK_WHY, received[-1].get_content())
+    #     print(respond)
+    #     argument_model.A2.send_message(respond)
+    steps=20
+    while steps>0:
+        steps-=1
+        for agent in argument_model.schedule.agents:
+            interact(agent, argument_model)
 
-    message = Message("Alice", "Bob", MessagePerformative(101), argument_model.item_list[1])
-    print(message)
-    argument_model.A1.send_message(message)
-    received = argument_model.A2.get_new_messages()
-    if argument_model.A2.preference.is_item_among_top_10_percent(received[-1].get_content(), argument_model.item_list):
-        respond = Message("Bob", "Alice", MessagePerformative(102), received[-1].get_content())
-        print(respond)
-        argument_model.A2.send_message(respond)
-    else:
-        respond = Message("Bob", "Alice", MessagePerformative(104), received[-1].get_content())
-        print(respond)
-        argument_model.A2.send_message(respond)
-    # To be completed
