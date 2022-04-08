@@ -66,8 +66,9 @@ class ArgumentAgent(CommunicatingAgent):
                     self.send_message(respond)
             elif perf==MessagePerformative.ASK_WHY:
                 arg = self.support_proposal(item)
-                print(arg)
+                # print(arg)
                 respond = Message(self.get_name(), exp, MessagePerformative.ARGUE, item)
+
                 self.send_message(respond)
 
 
@@ -76,7 +77,6 @@ class ArgumentAgent(CommunicatingAgent):
     def get_preference(self):
         return self.preference
 
-    #TODO faire une fonction qui génère les préférences du sujet (pas random)
 
     def generate_preferences(self, list_items):
         self.preference.set_criterion_name_list(self.generate_random_criterions_list())
@@ -112,11 +112,39 @@ class ArgumentAgent(CommunicatingAgent):
             best_argument = list_supporting_proposal[0]
         return best_argument
 
+    def List_supporting_proposal(self, item, preferences):
+        """Generates a list of premisses which can be used to support an item 
+        :param item: Item - name of the item
+        :return: list of all premisses PRO an item (sorted by order of importance
+        based on agent’s preferences) """
+        supportingCriterion = []
+        for criterion in preferences.get_criterion_name_list():
+            if preferences.get_value(item, criterion) in Argument().__positiveCriterionValues:
+                supportingCriterion.append(criterion)
+        print(f"preferences.get_criterion_name_list() = {preferences.get_criterion_name_list()}")
+        print(f"supportingCriterion = {supportingCriterion}")
+        return supportingCriterion
+
+    def List_attacking_proposal(self, item, preferences):
+        """Generates a list of premisses which can be used to attack an item 
+        :param item: Item - name of the item
+        :return: list of all premisses CON an item (sorted by order of importance
+        based on preferences) """
+        attackingCriterion = []
+        for criterion in preferences.get_criterion_name_list():
+            if preferences.get_value(item, criterion) in Argument().__negativeCriterionValues:
+                attackingCriterion.append(criterion)
+        return attackingCriterion
+
     def argument_parsing(self , argument):
         return (argument.get_comparison_list(), argument.get_couple_values_list(), argument.get_decision())
 
     def can_be_attacked_or_not(self, argument):
         comparisons, couples_values, decisions = self.argument_parsing(argument)
+        pref = self.get_preference()
+        criterions_ordered = pref.get_criterions_name_list()
+        comparisons
+
 
 
 class ArgumentModel(Model):
