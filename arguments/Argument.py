@@ -39,6 +39,15 @@ class Argument:
         """
         self.__couple_values_list.append(CoupleValue(criterion_name, value))
 
+    def get_comparison_list(self):
+        return self.__comparison_list
+    
+    def get_couple_values_list(self):
+        return self.__couple_values_list
+
+    def get_decision(self):
+        return self.__decision
+
     def create_arguments(self):
         criterions = self.__preference.get_criterion_name_list()
         for i in range(len(criterions)-1):

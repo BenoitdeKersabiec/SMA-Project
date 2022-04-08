@@ -126,7 +126,7 @@ class ArgumentAgent(CommunicatingAgent):
         return attackingCriterion
 
     def argument_parsing(self, argument):
-        return (argument.get_comparison_list(), argument.get_couple_values_list(), argument.get_decision())
+        return argument.get_comparison_list(), argument.get_couple_values_list(), argument.get_decision()
 
     def can_be_attacked_or_not(self, argument):
         comparisons, couples_values, decisions = self.argument_parsing(argument)
