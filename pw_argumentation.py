@@ -26,22 +26,6 @@ class ArgumentAgent(CommunicatingAgent):
     def step(self):
         super().step()
         inbox = self.get_new_messages()
-        # for in_message in inbox:
-        #     if in_message.get_performative().name == "PROPOSE":
-        #         if self.preference.is_item_among_top_10_percent(received[-1].get_content(), self.model.item_list):
-        #             out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(102), in_message.get_content())
-        #             print(self.get_name(), "sending message:")
-        #             print(out_respond)
-        #             self.send_message(out_respond)
-        #             self.state="Accepted"
-        #         else:
-        #             out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(104), in_message.get_content())
-        #             print(out_respond)
-        #             self.send_message(out_respond)
-        #     if in_message.get_performative().name == "COMMIT" and self.state == "Accepted":
-        #         out_respond = Message(self.get_name(), in_message.get_exp(), MessagePerformative(103), in_message.get_content())
-        #         print(out_respond)
-        #         self.send_message(out_respond)
         for received in inbox:
             print(received)
             exp = received.get_exp()
@@ -67,12 +51,15 @@ class ArgumentAgent(CommunicatingAgent):
             elif perf==MessagePerformative.ASK_WHY:
                 arg = self.support_proposal(item)
                 # print(arg)
-                respond = Message(self.get_name(), exp, MessagePerformative.ARGUE, item)
+                respond = Message(self.get_name(), exp, MessagePerformative.ARGUE, arg)
 
                 self.send_message(respond)
-
-
-
+            elif perf == MessagePerformative.ARGUE:
+                if self.can_be_attacked_or_not(item):
+                    pass
+                else:
+                    respond = Message(self.get_name(), exp, MessagePerformative.ACCEPT, item)
+                    self.send_message(respond)
 
     def get_preference(self):
         return self.preference
@@ -104,7 +91,7 @@ class ArgumentAgent(CommunicatingAgent):
         :return: string- the strongest supportive argument 
         """
         argument = Argument(boolean_decision=True, item=item)
-        list_supporting_proposal = argument.List_supporting_proposal(item=item, preferences = self.get_preference())
+        list_supporting_proposal = self.List_supporting_proposal(item=item, preferences = self.get_preference())
         if len(list_supporting_proposal) == 0:
             print("No argument to support the item")
             best_argument = None
@@ -143,7 +130,8 @@ class ArgumentAgent(CommunicatingAgent):
         comparisons, couples_values, decisions = self.argument_parsing(argument)
         pref = self.get_preference()
         criterions_ordered = pref.get_criterions_name_list()
-        comparisons
+        item = argument.__item
+
 
 
 
