@@ -51,7 +51,7 @@ class Argument:
     def create_arguments(self):
         criterions = self.__preference.get_criterion_name_list()
         for i in range(len(criterions)-1):
-            for j in range(i, len(criterions)):
+            for j in range(i+1, len(criterions)):
                 self.add_premiss_comparison(criterions[i], criterions[j])
         for crit in criterions:    
             value = self.__preference.get_value(self.__item, crit)
