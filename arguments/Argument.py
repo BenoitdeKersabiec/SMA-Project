@@ -22,7 +22,7 @@ class Argument:
         """Creates a new Argument.
         """
         self.__decision = boolean_decision
-        self.__item = item.get_name()
+        self.__item = item
         self.__comparison_list = []
         self.__couple_values_list = []
         self.__positiveCriterionValues = [Value.VERY_GOOD, Value.GOOD]
