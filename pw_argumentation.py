@@ -200,9 +200,6 @@ if __name__ == "__main__":
     agents = argument_model.schedule.agents
     agent1, agent2 = agents[0], agents[1]
 
-    # Example of the subject
-    
-
     message = Message(agent1.get_name(), agent2.get_name(), MessagePerformative.PROPOSE, argument_model.item_list[0])
     agent1.send_message(message)
     # print(message)
