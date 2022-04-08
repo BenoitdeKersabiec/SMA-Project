@@ -112,7 +112,13 @@ class ArgumentAgent(CommunicatingAgent):
             best_argument = list_supporting_proposal[0]
         return best_argument
 
-
+    def argument_parsing (self , argument):
+        """ 
+        Returns parsed arguments
+        :param argument:
+        :return tuple:
+        """
+        return (argument.get_decision(), argument.get_comparison_list(),argument.get_couple_values_list())
 
 class ArgumentModel(Model):
     """ ArgumentModel which inherit from Model.
