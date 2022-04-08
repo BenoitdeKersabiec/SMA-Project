@@ -98,7 +98,8 @@ class ArgumentAgent(CommunicatingAgent):
             best_argument = None
         else:
             argument.create_arguments()
-            best_argument = argument
+            best_argument = argument.get_couple_values_list()[0]
+            
         return best_argument
 
     def List_supporting_proposal(self, item, preferences):
@@ -152,8 +153,38 @@ class ArgumentModel(Model):
         self.A1 = ArgumentAgent(1, self, 'Alice', Preferences())
         self.A2 = ArgumentAgent(2, self, 'Bob', Preferences())
 
-        self.A1.generate_preferences(self.item_list)
-        self.A2.generate_preferences(self.item_list)
+        # Random
+        # self.A1.generate_preferences(self.item_list)
+        # self.A2.generate_preferences(self.item_list)
+
+        #Example of the subject
+        crit_names = list(CriterionName)
+        self.A1.preference.set_criterion_name_list([crit_names[0], crit_names[3], crit_names[1], crit_names[2], crit_names[4]])
+        self.A2.preference.set_criterion_name_list([crit_names[3], crit_names[4], crit_names[0], crit_names[1], crit_names[2]])
+
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[0], Value.GOOD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[1], Value.AVERAGE))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[2], Value.GOOD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[3], Value.VERY_BAD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[4], Value.BAD))
+
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[0], Value.AVERAGE))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[1], Value.BAD))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[2], Value.AVERAGE))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[3], Value.VERY_BAD))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[0], crit_names[4], Value.VERY_BAD))
+
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[0], Value.BAD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[1], Value.VERY_BAD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[2], Value.AVERAGE))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[3], Value.GOOD))
+        self.A1.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[4], Value.GOOD))
+
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[0], Value.AVERAGE))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[1], Value.BAD))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[2], Value.BAD))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[3], Value.GOOD))
+        self.A2.preference.add_criterion_value(CriterionValue(self.item_list[1], crit_names[4], Value.GOOD))
 
         self.schedule.add(self.A1)
         self.schedule.add(self.A2)
@@ -168,7 +199,11 @@ if __name__ == "__main__":
     argument_model = ArgumentModel()
     agents = argument_model.schedule.agents
     agent1, agent2 = agents[0], agents[1]
-    message = Message(agent1.get_name(), agent2.get_name(), MessagePerformative.PROPOSE, argument_model.item_list[1])
+
+    # Example of the subject
+    
+
+    message = Message(agent1.get_name(), agent2.get_name(), MessagePerformative.PROPOSE, argument_model.item_list[0])
     agent1.send_message(message)
     # print(message)
     # argument_model.A1.send_message(message)
