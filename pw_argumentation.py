@@ -121,7 +121,7 @@ class ArgumentAgent(CommunicatingAgent):
         based on preferences) """
         attackingCriterion = []
         for criterion in preferences.get_criterion_name_list():
-            if preferences.get_value(item, criterion) in Argument().__negativeCriterionValues:
+            if preferences.get_value(item, criterion) in [Value.VERY_BAD, Value.BAD]:
                 attackingCriterion.append(criterion)
         return attackingCriterion
 
