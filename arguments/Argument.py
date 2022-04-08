@@ -27,7 +27,7 @@ class Argument:
         self.__couple_values_list = []
         self.__positiveCriterionValues = [Value.VERY_GOOD, Value.GOOD]
         self.__negativeCriterionValues = [Value.VERY_BAD, Value.BAD]
-        self.preference = preference
+        self.__preference = preference
 
     def add_premiss_comparison(self, criterion_name_1, criterion_name_2):
         """Adds a premiss comparison in the comparison list.
@@ -39,7 +39,17 @@ class Argument:
         """
         self.__couple_values_list.append(CoupleValue(criterion_name, value))
 
-    def create_arguments(self, item):
+    def create_arguments(self):
+        criterions = self.__preference.get_criterion_name_list()
+        for i in range(len(criterions)-1):
+            for j in range(i, len(criterions)):
+                self.add_premiss_comparison(criterions[i], criterions[j])
+        for crit in criterions:    
+            value = self.__preference.get_value(self.__item, crit)
+            if self.__decision and value in self.__positiveCriterionValues:
+                self.add_premiss_couple_values(crit, value)
+            if not self.__decision and value in self.__negativeCriterionValues:
+                self.add_premiss_couple_values(crit, value)
         
 
 
